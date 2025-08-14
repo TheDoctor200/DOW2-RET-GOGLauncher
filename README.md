@@ -2,7 +2,7 @@
 
 A **modern Python Flet application** for launching **Warhammer 40k: Dawn of War II – Retribution** with **GOG DLL injection** capabilities.
 
-![Preview](asset/preview.png)
+![Preview](assets/preview.png)
 
 ---
 
