@@ -1,7 +1,7 @@
 # DOW2: Retribution - GOG Launcher
 
 A modern Python Flet application for launching Warhammer 40k: Dawn of War 2 - Retribution with GOG DLL injection capabilities.
-
+![Preview](asset/preview.jpg)
 ## Features
 
 - **Modern Warhammer 40k Theme**: Dark aesthetic with gold and red accents
@@ -73,3 +73,4 @@ The launcher automatically handles DLL injection by copying the appropriate file
 - **"Invalid game path"**: Ensure the path contains `DOW2.exe`
 - **"DLL not found"**: Verify that DLL files exist in the respective folders
 - **Permission errors**: Run as administrator if needed for DLL injection
+
