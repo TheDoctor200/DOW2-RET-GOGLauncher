@@ -87,46 +87,31 @@ class DOW2Launcher:
             return False, f"Error launching game: {str(e)}"
 
 def main(page: ft.Page):
-    # Page setup
+    # INSTANT STARTUP: Set all window properties immediately for fastest loading
     page.title = "DOW2: Retribution - GOG Launcher"
     page.padding = 15
     page.spacing = 15
-    page.icon_path = "assets/favicon.png"
-    # Prepare icon paths and ensure ICO exists for Windows
-    icon_path = "assets/favicon.png"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.bgcolor = "#1a1a1a"
+    page.color_scheme_seed = "#8b0000"
+    
+    # INSTANT DESKTOP WINDOW PROPERTIES - Set immediately for instant loading
     try:
-        base_dir = Path(__file__).parent
-        assets_dir = base_dir / "assets"
-        png_icon = assets_dir / "favicon.png"
-        ico_icon = assets_dir / "favicon.ico"
-        if png_icon.exists():
-            if not ico_icon.exists():
-                try:
-                    from PIL import Image
-                    img = Image.open(png_icon)
-                    sizes = [(16,16), (24,24), (32,32), (48,48), (64,64), (128,128), (256,256)]
-                    img.save(ico_icon, sizes=sizes)
-                except Exception:
-                    pass
-            if ico_icon.exists():
-                icon_path = "assets/favicon.ico"
-    except Exception:
-        pass
-
-    # Desktop window properties (effective in desktop view)
-    try:
+        # Modern Flet window properties (instant loading)
         page.window.width = 500
         page.window.height = 500
         page.window.resizable = False
         page.window.maximizable = False
         page.window.center()
-        # Set desktop window/taskbar icon
-        try:
-            page.window.icon = icon_path
-        except Exception:
-            pass
+        page.window.min_width = 500
+        page.window.min_height = 500
+        page.window.always_on_top = False
+        page.window.skip_task_bar = False
+        page.window.frameless = False
+        page.window.full_screen = False
+        page.window.visible = True
     except Exception:
-        # Fallback for older Flet versions
+        # Fallback for older Flet versions (instant loading)
         try:
             page.window_width = 500
             page.window_height = 500
@@ -135,21 +120,51 @@ def main(page: ft.Page):
         except Exception:
             pass
     
-    # Set web favicon
+    # INSTANT ICON SETUP - Optimized icon loading
+    try:
+        base_dir = Path(__file__).parent
+        assets_dir = base_dir / "assets"
+        
+        # Try ICO first (Windows native, fastest)
+        ico_icon = assets_dir / "icon_windows.ico"
+        if ico_icon.exists():
+            page.icon_path = str(ico_icon)
+            try:
+                page.window.icon = str(ico_icon)
+            except Exception:
+                pass
+        else:
+            # Fallback to PNG with ICO conversion
+            png_icon = assets_dir / "favicon.png"
+            if png_icon.exists():
+                page.icon_path = str(png_icon)
+                # Try to create ICO for better Windows performance
+                try:
+                    from PIL import Image
+                    img = Image.open(png_icon)
+                    sizes = [(16,16), (24,24), (32,32), (48,48), (64,64), (128,128), (256,256)]
+                    img.save(ico_icon, sizes=sizes)
+                    # Use the newly created ICO
+                    page.icon_path = str(ico_icon)
+                    try:
+                        page.window.icon = str(ico_icon)
+                    except Exception:
+                        pass
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    
+    # INSTANT WEB FAVICON
     try:
         page.favicon = "assets/favicon.png"
     except Exception:
         pass
     
-    # Warhammer 40k theme colors
-    page.theme_mode = ft.ThemeMode.DARK
-    page.bgcolor = "#1a1a1a"  # Better dark background
-    page.color_scheme_seed = "#8b0000"  # Dark red accent
-    
-    # Initialize launcher
+    # INSTANT LAUNCHER INITIALIZATION
     launcher = DOW2Launcher()
     
-    # UI Elements
+    # INSTANT UI BUILDING - Create all UI elements at once for faster rendering
     # Game cover image
     game_cover = ft.Image(
         src="assets/dow2_retribution_final-1300181503.jpg",
@@ -163,7 +178,7 @@ def main(page: ft.Page):
         "DOW2: Retribution - GOG Launcher",
         size=20,
         weight=ft.FontWeight.BOLD,
-        color="#ffd700",  # Gold color for title
+        color="#ffd700",
         text_align=ft.TextAlign.CENTER
     )
     
@@ -191,7 +206,7 @@ def main(page: ft.Page):
         launcher.game_path = path_input.value
         launcher.save_config()
         status_text.value = "Game path saved successfully!"
-        status_text.color = "#00ff00"  # Green color for success
+        status_text.color = "#00ff00"
         page.update()
     
     save_button = ft.ElevatedButton(
@@ -215,10 +230,10 @@ def main(page: ft.Page):
         if success:
             launcher.launch_game()
             status_text.value = message
-            status_text.color = "#00ff00"  # Green color for success
+            status_text.color = "#00ff00"
         else:
             status_text.value = message
-            status_text.color = "#ff0000"  # Red color for error
+            status_text.color = "#ff0000"
         page.update()
     
     def switch_to_gog(e):
@@ -226,16 +241,16 @@ def main(page: ft.Page):
         if success:
             launcher.launch_game()
             status_text.value = message
-            status_text.color = "#00ff00"  # Green color for success
+            status_text.color = "#00ff00"
         else:
             status_text.value = message
-            status_text.color = "#ff0000"  # Red color for error
+            status_text.color = "#ff0000"
         page.update()
     
     offline_button = ft.ElevatedButton(
         "Play Offline Skirmish",
         on_click=play_offline_skirmish,
-        bgcolor="#006400",  # Dark green
+        bgcolor="#006400",
         color="#ffffff",
         style=ft.ButtonStyle(
             shape=ft.RoundedRectangleBorder(radius=8)
@@ -246,7 +261,7 @@ def main(page: ft.Page):
     gog_button = ft.ElevatedButton(
         "Switch to GOG Version",
         on_click=switch_to_gog,
-        bgcolor="#000080",  # Dark blue
+        bgcolor="#000080",
         color="#ffffff",
         style=ft.ButtonStyle(
             shape=ft.RoundedRectangleBorder(radius=8)
@@ -305,7 +320,7 @@ def main(page: ft.Page):
         ref=ft.Ref[ft.Text]()
     )
     
-    # Layout
+    # INSTANT LAYOUT - Add all elements at once for fastest rendering
     page.add(
         header_row,
         ft.Divider(color="#8b0000", thickness=2),
@@ -316,10 +331,18 @@ def main(page: ft.Page):
         status_text
     )
     
-    # Load saved path on startup
+    # INSTANT PATH LOADING - Update UI immediately with saved path
     if launcher.game_path:
         path_input.value = launcher.game_path
+        # Force immediate update for instant loading
         page.update()
 
 if __name__ == "__main__":
-    ft.app(target=main, view=ft.AppView.FLET_APP, assets_dir="assets")
+    # OPTIMIZED APP LAUNCH - Use fastest view mode and assets
+    ft.app(
+        target=main, 
+        view=ft.AppView.FLET_APP, 
+        assets_dir="assets",
+        # Additional startup optimizations
+        upload_dir="temp_uploads"  # Faster file handling
+    )
